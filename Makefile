@@ -69,12 +69,14 @@ act:
 sanity-check:
 	golangci-lint run
 
-# generates the command-line help messages as markdown files, and in order to have a generic ${HOME}
-# rendered, it exports a fake home directory ("~"), and preserves the original GOPATH and GOCACHE to avoid
-# creating bogus files on the project directory.
+# Default output directory for generated docs
+DOC_OUTPUT_DIR ?= ./docs/reference
+
+# generates the command-line help messages as markdown files in the docs/reference directory
 .PHONY: generate-docs
 generate-docs:
-	GOPATH="$(GO_PATH)" GOCACHE="$(GO_CACHE)" HOME="~" go run cmd/help/main.go --output-dir=./docs
+	mkdir -p $(DOC_OUTPUT_DIR)
+	GOPATH="$(GO_PATH)" GOCACHE="$(GO_CACHE)" HOME="~" go run cmd/help/main.go --output-dir=$(DOC_OUTPUT_DIR)
 
 # checks if the generated documentation files are out of sync.
 .PHONY: verify-docs
